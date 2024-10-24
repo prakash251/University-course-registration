@@ -18,7 +18,6 @@ public class Professor {
 
     @OneToMany
     private List<Course> courses;  // A professor teaches many courses
-
     public Professor() {
     }
 

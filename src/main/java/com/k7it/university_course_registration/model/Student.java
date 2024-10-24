@@ -16,7 +16,7 @@ public class Student {
     private String password;
     private int semester;
     private int credits;
-    @OneToMany
+    @ManyToMany
     private List<Course> registeredCourses;
 
     public Student() {

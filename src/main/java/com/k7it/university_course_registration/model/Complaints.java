@@ -16,13 +16,11 @@ public class Complaints{
     private Long id;
     @ManyToOne
     private Student student;
-
     private String description;
-
     @Enumerated(EnumType.STRING)
     private ComplaintStatus status;
-
     private LocalDateTime createdDate;
+
     public Complaints() {
         this.createdDate = LocalDateTime.now();
         this.status = ComplaintStatus.PENDING; // Default status
