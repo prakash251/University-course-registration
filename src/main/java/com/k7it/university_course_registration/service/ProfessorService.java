@@ -52,9 +52,8 @@ public class ProfessorService {
     public CourseDto updateCourse(Long professorId, Long courseId, CourseDto courseDto) {
        Course course  =courseRepository.findByIdAndProfessorId(courseId,professorId).orElseThrow(()-> new RuntimeException("course not found"));
 
-     Professor professor=professorRepository.findById(courseDto.getProfessorId()).orElseThrow(()-> new NoSuchElementException("the element with id "+course.getProfessor().getId()+" not avialable"));
+       Professor professor=professorRepository.findById(courseDto.getProfessorId()).orElseThrow(()-> new NoSuchElementException("the element with id "+course.getProfessor().getId()+" not avialable"));
 
-     // Update only the allowed fields
 
         course.setCourseCode(courseDto.getCourseCode());
         course.setTitle(courseDto.getTitle());
@@ -65,10 +64,6 @@ public class ProfessorService {
         course.setProfessor(professor);
 
         courseRepository.save(course);
-
-
-
-
 
         return courseDto;
     }

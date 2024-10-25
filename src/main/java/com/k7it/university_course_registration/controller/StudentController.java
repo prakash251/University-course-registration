@@ -54,6 +54,11 @@ public class StudentController {
     }
 
 
+    @PostMapping("{studntId}/addcompletedcourse/{courseId}")
+   public ResponseEntity<String> addCompletedCourse(@PathVariable Long studntId,@PathVariable Long courseId)
+   {
+       return studentService.addcompletedCourse(studntId,courseId);
+   }
 
 }
 

@@ -2,9 +2,9 @@ package com.k7it.university_course_registration.service;
 
 import com.k7it.university_course_registration.dto.CourseDto;
 import com.k7it.university_course_registration.dto.CourseDtoFroAddingCouse;
-import com.k7it.university_course_registration.model.Course;
-import com.k7it.university_course_registration.model.Professor;
-import com.k7it.university_course_registration.model.Student;
+import com.k7it.university_course_registration.dto.StudentDtoToUpdate;
+import com.k7it.university_course_registration.model.*;
+import com.k7it.university_course_registration.repository.ComplaintsRepository;
 import com.k7it.university_course_registration.repository.CourseRepository;
 import com.k7it.university_course_registration.repository.ProfessorRepository;
 import com.k7it.university_course_registration.repository.StudentRepository;
@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,9 @@ public class AdminService {
     ProfessorRepository professorRepository;
     @Autowired
     StudentRepository studentRepository;
+
+    @Autowired
+    ComplaintsRepository complaintsRepository;
 
 
     public ResponseEntity<List<CourseDto>> getAllCourses() {
@@ -88,7 +92,7 @@ public class AdminService {
         return studentRepository.findById(id).get();
     }
 
-    public Student updateStudent(Long id, Student updatedStudent) {
+    public Student updateStudent(Long id, StudentDtoToUpdate updatedStudent) {
 
         Student student=studentRepository.findById(id).get();
         student.setName(updatedStudent.getName());
@@ -96,7 +100,11 @@ public class AdminService {
         student.setPassword(updatedStudent.getPassword());
         student.setSemester(updatedStudent.getSemester());
         student.setCredits(updatedStudent.getCredits());
-        student.setRegisteredCourses(updatedStudent.getRegisteredCourses());
+
+        List<Long> studentIds=updatedStudent.getRegisteredCourses();
+
+        List<Course> courses=courseRepository.findAllById(studentIds);
+        student.setRegisteredCourses(courses);
 
         studentRepository.save(student);
 
@@ -112,5 +120,42 @@ public class AdminService {
 
        return student;
 
+    }
+
+    public void assignProfessor(Long courseId, Long professorId) {
+        Course course=courseRepository.findById(courseId).get();
+       Professor professor= professorRepository.findById(professorId).get();
+       course.setProfessor(professor);
+       courseRepository.save(course);
+
+    }
+
+    public List<Complaints> getAllComplaints() {
+
+       return complaintsRepository.findAll();
+
+
+    }
+
+    public List<Complaints> filterComplaintsByStatus(Complaints.ComplaintStatus status) {
+        return complaintsRepository.findByStatus(status);
+    }
+
+    public Complaints updateResolutionDetails(Long id, String details) {
+        return null;
+    }
+
+    public Complaints updateComplaintStatus(Long id, Complaints.ComplaintStatus status) {
+
+         Complaints complaints  =complaintsRepository.findById(id).get();
+         complaints.setStatus(status);
+         complaintsRepository.save(complaints);
+
+        return  complaints;
+    }
+
+    public List<Complaints> filterComplaintsByDate(LocalDateTime date) {
+
+        return complaintsRepository.findByCreatedDate(date);
     }
 }

@@ -7,6 +7,7 @@ import com.k7it.university_course_registration.model.Student;
 import com.k7it.university_course_registration.repository.CompletedCourseRepository;
 import com.k7it.university_course_registration.repository.CourseRepository;
 import com.k7it.university_course_registration.repository.StudentRepository;
+import jakarta.persistence.ManyToOne;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -128,6 +129,7 @@ public class StudentService {
 
             for (CompletedCourses completedCourse : coursesInSemester) {
                 FinalProgessDto dto = new FinalProgessDto(
+                        completedCourse.getSemester(),
                         completedCourse.getCourse().getId(),
                         completedCourse.getCourse().getCourseCode(),
                         completedCourse.getCourse().getTitle(),
@@ -135,6 +137,7 @@ public class StudentService {
                         completedCourse.getGrade(),
                         String.format("%.2f", calculateGPA(completedCourses)),  // CGPA
                         String.format("%.2f", sgpa)  // SGPA
+
                 );
                 finalProgressList.add(dto);
             }
@@ -184,6 +187,19 @@ public class StudentService {
             throw new RuntimeException("Course not found in student's registered courses");
         }
     }
+    public ResponseEntity<String> addcompletedCourse(Long studentID,Long courseId) {
 
+       Course course =courseRepository.findById(courseId).get();
+       Student student=studentRepository.findById(studentID).get();
+       CompletedCourses completedCourses=new CompletedCourses();
+
+       completedCourses.setCourse(course);
+       completedCourses.setStudent(student);
+       completedCourses.setSemester(course.getSemister());
+       completedCourses.setCredits(course.getCredits()+2);
+       completedCourses.setGrade("A");
+       completedCourseRepository.save(completedCourses);
+        return new  ResponseEntity<>("completed successfully",HttpStatus.OK);
+    }
 }
 

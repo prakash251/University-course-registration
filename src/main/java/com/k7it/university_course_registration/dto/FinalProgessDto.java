@@ -6,7 +6,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Data
 public class FinalProgessDto {
 
-    private String SemisterId;
+    private int Semister;
     private Long courseId;
     private String courseCode;
     private String title;
@@ -18,7 +18,8 @@ public class FinalProgessDto {
     public FinalProgessDto() {
     }
 
-    public FinalProgessDto(Long courseId, String courseCode, String title, int credits, String grade, String cgp, String sgp) {
+    public FinalProgessDto( int Semister ,Long courseId, String courseCode, String title, int credits, String grade, String cgp, String sgp) {
+        this.Semister=Semister;
         this.courseId = courseId;
         this.courseCode = courseCode;
         this.title = title;
