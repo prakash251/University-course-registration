@@ -1,13 +1,14 @@
 package com.k7it.university_course_registration.service;
 
-import com.k7it.university_course_registration.dto.*;
+import com.k7it.university_course_registration.dto.CourseDto;
+import com.k7it.university_course_registration.dto.FinalProgessDto;
+import com.k7it.university_course_registration.dto.ScheduleDto;
 import com.k7it.university_course_registration.model.CompletedCourses;
 import com.k7it.university_course_registration.model.Course;
 import com.k7it.university_course_registration.model.Student;
 import com.k7it.university_course_registration.repository.CompletedCourseRepository;
 import com.k7it.university_course_registration.repository.CourseRepository;
 import com.k7it.university_course_registration.repository.StudentRepository;
-import jakarta.persistence.ManyToOne;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
