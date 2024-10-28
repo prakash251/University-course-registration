@@ -14,6 +14,8 @@ import java.nio.file.AccessDeniedException;
 import java.security.PrivateKey;
 import java.util.List;
 
+/**
+ * This Classs is Responisible for  professor APIs */
 @RestController
 @RequestMapping("professors")
 public class ProfessorController {
@@ -25,12 +27,24 @@ public class ProfessorController {
         @Autowired
         private ProfessorService professorService;
 
-        @GetMapping("{professorId}/courses")
+    /**
+     * This API will get courese
+     * @param professorId
+     * @return
+     */
+    @GetMapping("{professorId}/courses")
         public ResponseEntity<List<CourseDto>> getCourses(@PathVariable Long professorId) {
             List<CourseDto> courses = professorService.viewProfessorCourses(professorId);
             return ResponseEntity.ok(courses);
         }
 
+    /**
+     * This API will update Course
+     * @param professorId
+     * @param courseId
+     * @param courseDto
+     * @return
+     */
         @PutMapping("{professorId}/courses/{courseId}")
         public ResponseEntity<CourseDto> updateCourse(
                 @PathVariable Long professorId,
@@ -41,15 +55,20 @@ public class ProfessorController {
             return ResponseEntity.ok(updatedCourse);
         }
 
+    /**
+     * This API will view EnrolledStudent
+     * @param professorId
+     * @param courseId
+     * @return
+     * @throws AccessDeniedException
+     */
 
     @GetMapping("/{professorId}/courses/{courseId}/students")
     public List<StudentDto> viewEnrolledStudents(@PathVariable Long professorId, @PathVariable Long courseId) throws AccessDeniedException {
        Course course  =courseRepository.getById(courseId);
-        if((course.getProfessor().getId()).equals(professorId))
-        {
+        if((course.getProfessor().getId()).equals(professorId)) {
             throw new AccessDeniedException("profferson not belongs to this course");
         }
-        // Assuming some validation to ensure that the professor owns the course
         return professorService.getEnrolledStudents(courseId);
     }
     }

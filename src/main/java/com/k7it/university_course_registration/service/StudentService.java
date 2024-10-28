@@ -172,7 +172,7 @@ public class StudentService {
         }
     }
 
-    //drop course
+
     public void dropCourse(Long studentId, Long courseId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));

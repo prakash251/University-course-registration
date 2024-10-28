@@ -1,3 +1,4 @@
+
 package com.k7it.university_course_registration.controller;
 
 
@@ -11,31 +12,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
 @RequestMapping("admin")
+/**
+ * @apiNote this class responsible  for admin controlloer
+ */
 public class AdminController {
     @Autowired
     AdminService adminService;
 
-    // Get all courses
+    /**
+     * This ApI will get All Courses
+     * @return
+     */
     @GetMapping("courses")
     public ResponseEntity<List<CourseDto>> getAllCourses() {
+
         return adminService.getAllCourses();
     }
 
-
-    //add courses
+    /**
+     * This API is add course
+     * @param course
+     * @return
+     */
     @PostMapping("addcourse")
     public ResponseEntity<String> addCourse(@RequestBody CourseDtoFroAddingCouse course) {
 
         return adminService.addCourse(course);
     }
 
+    /**
+     * This API will remove course
+     * @param courseId
+     * @return
+     */
     @DeleteMapping("delete-course/{courseId}")
     public ResponseEntity<String> removecourse(@PathVariable long courseId) {
 
@@ -43,59 +58,91 @@ public class AdminController {
     }
 
 
-    // Endpoint to get all students
+    /**
+     *This ApI will get all students
+     * @return
+     */
     @GetMapping("students")
     public List<Student> getAllStudents() {
         return adminService.getAllStudents();
     }
 
-    // Endpoint to get a student by ID
+    /**
+     * This API will get student by Id
+     * @param id
+     * @return
+     */
     @GetMapping("students/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
         Student student = adminService.getStudentById(id);
         return ResponseEntity.ok(student);
     }
 
-    // Endpoint to update student details
+    /**
+     * This API will update student
+     * @param id
+     * @param updatedStudent
+     * @return
+     */
     @PutMapping("students/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody StudentDtoToUpdate updatedStudent) {
         Student student = adminService.updateStudent(id, updatedStudent);
         return ResponseEntity.ok(student);
     }
 
-    // Endpoint to update student grades
+    /**
+     * this API will upodate student grades
+     * @param id
+     * @param updatedCredits
+     * @return
+     */
     @PutMapping("students/{id}/grades")
     public ResponseEntity<Student> updateStudentGrades(@PathVariable Long id, @RequestBody int updatedCredits) {
         Student student = adminService.updateStudentGrades(id, updatedCredits);
         return ResponseEntity.ok(student);
     }
 
-
+    /**
+     *This API will Assign professor to course
+     * @param courseId
+     * @param professorId
+     * @return
+     */
     @PutMapping("courses/{courseId}/assignProfessor")
     public ResponseEntity<String> assignProfessorToCourse(
             @PathVariable Long courseId,
-            @RequestBody Long professorId
-    ) {
+            @RequestBody Long professorId  ) {
         adminService.assignProfessor(courseId, professorId);
         return ResponseEntity.ok("Professor assigned to course successfully.");
     }
 
-
-    // View all complaints
+    /**
+     * this APi will get all complaints
+     * @return
+     */
     @GetMapping("complaints")
     public ResponseEntity<List<Complaints>> getAllComplaints() {
         List<Complaints> complaints = adminService.getAllComplaints();
         return ResponseEntity.ok(complaints);
     }
 
-    // Filter complaints by status
+    /**
+     * This API will filter complaints by status
+     * @param status
+     * @return
+     */
     @GetMapping("complaints/status/{status}")
     public ResponseEntity<List<Complaints>> filterComplaintsByStatus(@PathVariable Complaints.ComplaintStatus status) {
         List<Complaints> complaints = adminService.filterComplaintsByStatus(status);
         return ResponseEntity.ok(complaints);
     }
 
-    // Filter complaints by date
+    /**
+     *This  API will filter complaints by date
+     * @param date
+     * @return
+     */
+
     @GetMapping("complaints/date/{date}")
     public ResponseEntity<List<Complaints>> filterComplaintsByDate(@PathVariable String date) {
         LocalDateTime dateTime;
@@ -109,7 +156,13 @@ public class AdminController {
         return ResponseEntity.ok(complaints);
     }
 
-    // Update complaint status
+    /**
+     *  This API will update the status on Complaints
+     * @param id
+     * @param status
+     * @return
+     */
+
     @PutMapping("complaints/{id}/status")
     public ResponseEntity<Complaints> updateComplaintStatus(@PathVariable Long id, @RequestBody Complaints.ComplaintStatus status) {
         Complaints updatedComplaint = adminService.updateComplaintStatus(id, status);
