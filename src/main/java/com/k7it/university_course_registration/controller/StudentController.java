@@ -4,7 +4,9 @@ import com.k7it.university_course_registration.dto.AcademicProgressDto;
 import com.k7it.university_course_registration.dto.CourseDto;
 import com.k7it.university_course_registration.dto.FinalProgessDto;
 import com.k7it.university_course_registration.dto.ScheduleDto;
+import com.k7it.university_course_registration.model.CourseStatus;
 import com.k7it.university_course_registration.service.StudentService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,7 @@ public class StudentController {
      * @param semister
      * @return
      */
-    @GetMapping("courses/{semister}")
+    @GetMapping("view-all-courses-by-semister//{semister}")
     public List<CourseDto> viewCourses(@PathVariable int semister) {
         return studentService.viewCourses(semister);
     }
@@ -37,7 +39,7 @@ public class StudentController {
      * @param courseId
      * @return
      */
-    @PostMapping("{studentId}/register/{courseId}")
+    @PostMapping("/studentid/{studentId}/register/courseid/{courseId}")
     public ResponseEntity<String> registerCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
         studentService.registerForCourse(studentId, courseId);
         return ResponseEntity.ok("Course registered successfully");
@@ -48,7 +50,7 @@ public class StudentController {
      * @param sid
      * @return
      */
-    @GetMapping("mycourse/{sid}")
+    @GetMapping("view-mycourse-by-studentid/{sid}")
     public List<CourseDto> viewMyCourses(@PathVariable Long sid) {
         return studentService.viewMyCourses(sid);
     }
@@ -58,7 +60,7 @@ public class StudentController {
      * @param studentId
      * @return
      */
-    @GetMapping("schedule/{studentId}")
+    @GetMapping("scheduled-courses-by-studentid/{studentId}")
     public ResponseEntity<List<ScheduleDto>> course_Schedule(@PathVariable long studentId)
     {
         return studentService.schedule_course(studentId);
@@ -94,10 +96,16 @@ public class StudentController {
      * @param courseId
      * @return
      */
-    @PostMapping("{studntId}/addcompletedcourse/{courseId}")
+    @PostMapping("studentid/{studntId}/addcompletedcourse/courseid/{courseId}")
    public ResponseEntity<String> addCompletedCourse(@PathVariable Long studntId,@PathVariable Long courseId)
    {
        return studentService.addcompletedCourse(studntId,courseId);
+   }
+
+   @GetMapping("View-my-courses-status/student-id/{studentId}")
+   public ResponseEntity<List<CourseStatus>> viewMycoursesStatus(@PathVariable Long studentId){
+
+        return studentService.viewCourseStatus(studentId);
    }
 
 }

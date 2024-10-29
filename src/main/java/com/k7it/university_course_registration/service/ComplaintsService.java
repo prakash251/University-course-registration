@@ -43,10 +43,4 @@ public class ComplaintsService {
         }).collect(Collectors.toList());
     }
 
-    public void changeComplaintStatus(Long complaintId, Complaints.ComplaintStatus status) {
-        Complaints complaint = complaintRepository.findById(complaintId)
-                .orElseThrow(() -> new RuntimeException("Complaint not found"));
-        complaint.setStatus(status);
-        complaintRepository.save(complaint);
-    }
 }

@@ -6,6 +6,8 @@ import com.k7it.university_course_registration.dto.CourseDto;
 import com.k7it.university_course_registration.dto.CourseDtoFroAddingCouse;
 import com.k7it.university_course_registration.dto.StudentDtoToUpdate;
 import com.k7it.university_course_registration.model.Complaints;
+import com.k7it.university_course_registration.model.CourseStatus;
+import com.k7it.university_course_registration.model.Professor;
 import com.k7it.university_course_registration.model.Student;
 import com.k7it.university_course_registration.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +27,18 @@ public class AdminController {
     @Autowired
     AdminService adminService;
 
-    /**
-     * This ApI will get All Courses
-     * @return
-     */
-    @GetMapping("courses")
-    public ResponseEntity<List<CourseDto>> getAllCourses() {
+    @PostMapping("add-professor")
+    public String addPofessor(@RequestBody Professor professor)
+    {
+       return adminService.addProfessor(professor);
 
-        return adminService.getAllCourses();
     }
 
+    @PostMapping("add-student")
+    public String addStundt(@RequestBody Student student)
+    {
+        return adminService.addStundet(student);
+    }
     /**
      * This API is add course
      * @param course
@@ -45,6 +49,18 @@ public class AdminController {
 
         return adminService.addCourse(course);
     }
+
+
+    /**
+     * This ApI will get All Courses
+     * @return
+     */
+    @GetMapping("view-all-courses")
+    public ResponseEntity<List<CourseDto>> getAllCourses() {
+
+        return adminService.getAllCourses();
+    }
+
 
     /**
      * This API will remove course
@@ -108,7 +124,7 @@ public class AdminController {
      * @param professorId
      * @return
      */
-    @PutMapping("courses/{courseId}/assignProfessor")
+    @PutMapping("courses/courseid/{courseId}/assignProfessor")
     public ResponseEntity<String> assignProfessorToCourse(
             @PathVariable Long courseId,
             @RequestBody Long professorId  ) {
@@ -167,6 +183,14 @@ public class AdminController {
     public ResponseEntity<Complaints> updateComplaintStatus(@PathVariable Long id, @RequestBody Complaints.ComplaintStatus status) {
         Complaints updatedComplaint = adminService.updateComplaintStatus(id, status);
         return ResponseEntity.ok(updatedComplaint);
+    }
+
+    @GetMapping("view-all-courses-status")
+    public ResponseEntity<List<CourseStatus>> viewAllCourseStatus()
+    {
+
+        return adminService.viewAllCoursesStatus();
+
     }
 }
 

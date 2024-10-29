@@ -3,12 +3,8 @@ package com.k7it.university_course_registration.service;
 import com.k7it.university_course_registration.dto.CourseDto;
 import com.k7it.university_course_registration.dto.FinalProgessDto;
 import com.k7it.university_course_registration.dto.ScheduleDto;
-import com.k7it.university_course_registration.model.CompletedCourses;
-import com.k7it.university_course_registration.model.Course;
-import com.k7it.university_course_registration.model.Student;
-import com.k7it.university_course_registration.repository.CompletedCourseRepository;
-import com.k7it.university_course_registration.repository.CourseRepository;
-import com.k7it.university_course_registration.repository.StudentRepository;
+import com.k7it.university_course_registration.model.*;
+import com.k7it.university_course_registration.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +22,10 @@ public class StudentService {
     private StudentRepository studentRepository;
     @Autowired
     private CourseRepository courseRepository;
+    @Autowired
+    private ProfessorRepository professorRepository;
+    @Autowired
+    private CourseStatusRepository courseStatusRepository;
 
     @Autowired
     private CompletedCourseRepository completedCourseRepository;
@@ -43,32 +43,50 @@ public class StudentService {
             dto.setTimings(course.getTimings());
             dto.setSemister(course.getSemister());
             dto.setProfessorId(course.getProfessor().getId());
-            dto.setProfessorName(course.getProfessor().getName());// Fetch only the professor ID
+            dto.setProfessorName(course.getProfessor().getName());
             return dto;
         }).collect(Collectors.toList());
     }
 
     public ResponseEntity<String> registerForCourse(Long studentId, Long courseId) {
 
-        // Fetch student and course details
+
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+        Professor professor=professorRepository.findById(course.getProfessor().getId()).orElseThrow(()-> new RuntimeException("professor not found "));
 
-        // Check if the student is registering for a course in their current semester
         if (student.getSemester() < course.getSemister()) {
             return ResponseEntity.badRequest().body("Cannot register for a course in a future semester.");
         }
 
-        // Check if adding the course exceeds the credit limit
+
         int totalCredits = student.getCredits() + course.getCredits();
         if (totalCredits > 20) {
             return ResponseEntity.badRequest().body("Cannot register: total credits exceed the limit of 20.");
         }
 
-        // Register the student for the course
         student.getRegisteredCourses().add(course);
         student.setCredits(totalCredits);
         studentRepository.save(student);
+        /**
+         * for adding course into coursestatus
+         */
+        CourseStatus courseStatus = new CourseStatus();
+        courseStatus.setCourseId(course.getId());
+        courseStatus.setCourseCode(course.getCourseCode());
+        courseStatus.setCourseTitle(course.getTitle());
+        courseStatus.setCredits(course.getCredits());
+        courseStatus.setPrerequisites(course.getPrerequisites());
+        courseStatus.setTimings(course.getTimings());
+        courseStatus.setSemister(course.getSemister());
+        courseStatus.setProfessorId(professor.getId());
+        courseStatus.setProfessorName(professor.getName());
+        courseStatus.setStudentId(student.getId());
+        courseStatus.setStudentName(student.getName());
+        courseStatus.setStatus("Active");
+
+        courseStatusRepository.save(courseStatus);
+
 
         return ResponseEntity.ok("Successfully registered for the course: " + course.getTitle());
     }
@@ -189,6 +207,8 @@ public class StudentService {
         }
     }
     public ResponseEntity<String> addcompletedCourse(Long studentID,Long courseId) {
+        CourseStatus courseStatus=courseStatusRepository.findById(courseId).orElseThrow(()->new RuntimeException("course not found in course status table"));
+
 
        Course course =courseRepository.findById(courseId).get();
        Student student=studentRepository.findById(studentID).get();
@@ -200,7 +220,27 @@ public class StudentService {
        completedCourses.setCredits(course.getCredits()+2);
        completedCourses.setGrade("A");
        completedCourseRepository.save(completedCourses);
+
+        /**
+         * here logic for update status of course
+         */
+        courseStatus.setStatus("COMPLETED");
+
+        courseStatusRepository.save(courseStatus);
+
+
+
+
         return new  ResponseEntity<>("completed successfully",HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<CourseStatus>> viewCourseStatus(Long studentId) {
+
+        List<CourseStatus> courseStatuses=courseStatusRepository.findByStudentId(studentId).orElseThrow(()->new RuntimeException("course not found "));
+
+
+
+        return new ResponseEntity<>(courseStatuses,HttpStatus.OK);
     }
 }
 

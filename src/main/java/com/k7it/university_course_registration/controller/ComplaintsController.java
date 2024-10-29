@@ -26,7 +26,7 @@ public class ComplaintsController {
      * @param description
      * @return
      */
-    @PostMapping("{studentId}/submit")
+    @PostMapping("studentid/{studentId}/submit")
     public ResponseEntity<Complaints> submitComplaint(@PathVariable Long studentId, @RequestBody String description) {
         Complaints complaint = complaintService.submitComplaint(studentId, description);
         return ResponseEntity.ok(complaint);
@@ -37,20 +37,12 @@ public class ComplaintsController {
      * @param studentId
      * @return
      */
-    @GetMapping("{studentId}")
+    @GetMapping("view-complaints-by-studentid/{studentId}")
     public ResponseEntity<List<ComplaintsDto>> viewComplaints(@PathVariable Long studentId) {
         List<ComplaintsDto> complaints = complaintService.getAllComplaints(studentId);
         return ResponseEntity.ok(complaints);
     }
 
-    /**This API is used for change complaints status
-     * @param complaintId
-     * @param status
-     * @return
-     */
-    @PutMapping("admin/{complaintId}/status")
-    public ResponseEntity<Complaints> changeComplaintStatus(@PathVariable Long complaintId, @RequestBody Complaints.ComplaintStatus status) {
-        complaintService.changeComplaintStatus(complaintId, status);
-        return ResponseEntity.ok().build();
-    }
+
+
 }

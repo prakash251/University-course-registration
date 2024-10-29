@@ -4,10 +4,7 @@ import com.k7it.university_course_registration.dto.CourseDto;
 import com.k7it.university_course_registration.dto.CourseDtoFroAddingCouse;
 import com.k7it.university_course_registration.dto.StudentDtoToUpdate;
 import com.k7it.university_course_registration.model.*;
-import com.k7it.university_course_registration.repository.ComplaintsRepository;
-import com.k7it.university_course_registration.repository.CourseRepository;
-import com.k7it.university_course_registration.repository.ProfessorRepository;
-import com.k7it.university_course_registration.repository.StudentRepository;
+import com.k7it.university_course_registration.repository.*;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +31,8 @@ public class AdminService {
 
     @Autowired
     ComplaintsRepository complaintsRepository;
+    @Autowired
+    CourseStatusRepository courseStatusRepository;
 
 
     public ResponseEntity<List<CourseDto>> getAllCourses() {
@@ -42,6 +41,7 @@ public class AdminService {
         return new ResponseEntity<>(courses.stream().map(course -> {
 
             CourseDto dto = new CourseDto();
+
 
             dto.setId(course.getId());
             dto.setCourseCode(course.getCourseCode());
@@ -157,5 +157,22 @@ public class AdminService {
     public List<Complaints> filterComplaintsByDate(LocalDateTime date) {
 
         return complaintsRepository.findByCreatedDate(date);
+    }
+
+    public ResponseEntity<List<CourseStatus>> viewAllCoursesStatus() {
+
+        List<CourseStatus> courseStatuses=courseStatusRepository.findAll();
+        return  new ResponseEntity<>(courseStatuses,HttpStatus.OK);
+    }
+
+    public String addStundet(Student student) {
+
+        studentRepository.save(student);
+        return "student added successfully";
+    }
+
+    public String addProfessor(Professor professor) {
+        professorRepository.save(professor);
+        return "professor added Succesfully";
     }
 }
