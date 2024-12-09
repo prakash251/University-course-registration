@@ -1,0 +1,217 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > StudentController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.k7it.university_course_registration.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: StudentController (com.k7it.university_course_registration.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StudentController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    22.2%
+  </span>
+  <span class="absValue">
+    (2/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (2/12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.k7it.university_course_registration.controller;
+&nbsp;
+&nbsp;import com.k7it.university_course_registration.dto.AcademicProgressDto;
+&nbsp;import com.k7it.university_course_registration.dto.CourseDto;
+&nbsp;import com.k7it.university_course_registration.dto.FinalProgessDto;
+&nbsp;import com.k7it.university_course_registration.dto.ScheduleDto;
+&nbsp;import com.k7it.university_course_registration.model.CourseStatus;
+&nbsp;import com.k7it.university_course_registration.service.StudentService;
+&nbsp;import org.apache.coyote.Response;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * This Class Is responsible form student APIS
+&nbsp; */
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;student&quot;)
+<b class="fc">&nbsp;public class StudentController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private StudentService studentService;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This API will view courses
+&nbsp;     * @param semister
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;view-all-courses-by-semister/{semister}&quot;)
+&nbsp;    public List&lt;CourseDto&gt; viewCourses(@PathVariable int semister) {
+<b class="fc">&nbsp;        return studentService.viewCourses(semister);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This API will Register Courses
+&nbsp;     * @param studentId
+&nbsp;     * @param courseId
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/studentid/{studentId}/register/courseid/{courseId}&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; registerCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
+<b class="nc">&nbsp;        studentService.registerForCourse(studentId, courseId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Course registered successfully&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This API will View Courses
+&nbsp;     * @param sid
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;view-mycourse-by-studentid/{sid}&quot;)
+&nbsp;    public List&lt;CourseDto&gt; viewMyCourses(@PathVariable Long sid) {
+<b class="nc">&nbsp;        return studentService.viewMyCourses(sid);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This API Schedule Course
+&nbsp;     * @param studentId
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;scheduled-courses-by-studentid/{studentId}&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;ScheduleDto&gt;&gt; course_Schedule(@PathVariable long studentId)
+&nbsp;    {
+<b class="nc">&nbsp;        return studentService.schedule_course(studentId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This APi View Acadamic Progress
+&nbsp;     * @param studentId
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;{studentId}/progress&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;FinalProgessDto&gt;&gt; viewAcademicProgress(@PathVariable Long studentId) {
+<b class="nc">&nbsp;        List&lt;FinalProgessDto&gt; progressList = studentService.viewAcademicProgress(studentId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(progressList);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This Api Drop Course
+&nbsp;     * @param studentId
+&nbsp;     * @param courseId
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    @DeleteMapping(&quot;{studentId}/drop/{courseId}&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; dropCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
+<b class="nc">&nbsp;        studentService.dropCourse(studentId, courseId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Course dropped successfully&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This Api Add course in completed courses
+&nbsp;     * @param studntId
+&nbsp;     * @param courseId
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;studentid/{studntId}/addcompletedcourse/courseid/{courseId}&quot;)
+&nbsp;   public ResponseEntity&lt;String&gt; addCompletedCourse(@PathVariable Long studntId,@PathVariable Long courseId)
+&nbsp;   {
+<b class="nc">&nbsp;       return studentService.addcompletedCourse(studntId,courseId);</b>
+&nbsp;   }
+&nbsp;
+&nbsp;   @GetMapping(&quot;View-my-courses-status/student-id/{studentId}&quot;)
+&nbsp;   public ResponseEntity&lt;List&lt;CourseStatus&gt;&gt; viewMycoursesStatus(@PathVariable Long studentId){
+&nbsp;
+<b class="nc">&nbsp;        return studentService.viewCourseStatus(studentId);</b>
+&nbsp;   }
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-07 19:32</div>
+</div>
+</body>
+</html>

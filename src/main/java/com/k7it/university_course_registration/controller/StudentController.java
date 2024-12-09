@@ -28,7 +28,7 @@ public class StudentController {
      * @param semister
      * @return
      */
-    @GetMapping("view-all-courses-by-semister//{semister}")
+    @GetMapping("view-all-courses-by-semister/{semister}")
     public List<CourseDto> viewCourses(@PathVariable int semister) {
         return studentService.viewCourses(semister);
     }
